@@ -29,30 +29,31 @@ run_cellanneal <- function(mixture,
                            bulk_min=1e-5,
                            bulk_max = 0.01,
                            maxiter){
+  # Check imputs
   stopifnot("mix_index not found in mixture" = mix_index %in% colnames(mixture))
   stopifnot("sig_index not found in signature" = sig_index %in% colnames(signature))
   # Check if signature and mixture have no duplicated gene names
   stopifnot("signature contains duplicated gene names" = length(signature[[sig_index]]) == length(unique(signature[[sig_index]])))
   stopifnot("mixture contains duplicated gene names" = length(mixture[[mix_index]]) == length(unique(mixture[[mix_index]])))
 
-
   reticulate::use_condaenv("cellannealr-internal")
   ca <- reticulate::import("cellanneal")
   pd <- reticulate::import("pandas")
+
+  # Convert imput data
   mix_py <- reticulate::r_to_py(mixture)
   sig_py <- reticulate::r_to_py(signature)
-
   sig_py <- sig_py$set_index(sig_index)
   mix_py <- mix_py$set_index(mix_index)
 
-  message("create gene dictionary")
+  # Run cellanneal
   gene_dict <- ca$make_gene_dictionary(sig_py,
                                        mix_py,
                                        disp_min = disp_min,
                                        bulk_min = bulk_min,
                                        bulk_max = bulk_max
                                        )
-  message("deconvolute...")
+
   deconv <- ca$deconvolve(sig_py,
                           mix_py,
                           maxiter = as.integer(1000),
