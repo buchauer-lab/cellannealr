@@ -41,6 +41,11 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: install conda
+        run: |
+            Rscript -e 'install.packages("reticulate", repos = "https://ftp.fau.de/cran/")'
+            Rscript -e 'reticulate::install_miniconda()'
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
