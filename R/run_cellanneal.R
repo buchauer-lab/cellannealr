@@ -59,5 +59,5 @@ run_cellanneal <- function(mixture,
                           maxiter = as.integer(1000),
                           gene_dict = gene_dict)
 
-  dplyr::as_tibble(deconv, rownames = "Sample")
+  dplyr::as_tibble(deconv, rownames = "sample")
   }
